@@ -18,19 +18,13 @@ MY_PASSWORD = os.environ.get("MY_PASSWORD")
 
 birthday_messages = []
 
-def messages():
-    with open("letter_templates/letter_1.txt") as file:
-        data1 = file.read()
-        birthday_messages.append(data1)
-    with open("letter_templates/letter_2.txt") as file:
-        data2 = file.read()
-        birthday_messages.append(data2)
-    with open("letter_templates/letter_3.txt") as file:
-        data3 = file.read()
-        birthday_messages.append(data3)
+def messages(names):
+    for number in range(1, 4):
+        with open(f"letter_templates/letter_{number}.txt") as file:
+            birthday_messages.append(file.read())
     
     message = random.choice(birthday_messages)
-    letter = message.replace("[NAME]", name)
+    letter = message.replace("[NAME]", names)
     
     return letter
 
@@ -38,9 +32,9 @@ def send_email(letter, recipient):
 
     with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as connection:
         connection.starttls()
-        connection.login(user=my_email, password=my_password)
-        connection.sendmail(from_addr=my_email, to_addrs=recipient, msg=f"Subject: Happy Birthday\n\n{letter}")
-    print(f"Message sent successfully to {name}")
+        connection.login(user=MY_EMAIL, password=MY_PASSWORD)
+        connection.sendmail(from_addr=MY_EMAIL, to_addrs=recipient, msg=f"Subject: Happy Birthday\n\n{letter}")
+    print(f"Message sent successfully to {recipient}")
 
 # 1. Update the birthdays.csv
 data = pandas.read_csv("birthdays.csv")
@@ -56,6 +50,6 @@ for _, person in data.iterrows():
     day = int(person["day"])
     
     if current_day == day and current_month == month:
-        message_compose = messages()
+        message_compose = messages(names)
         send_email(message_compose, email)
         
