@@ -43,13 +43,20 @@ time_now = dt.datetime.now()
 current_month  = time_now.month
 current_day = time_now.day
 
+print(f"Today's date: {current_month}/{current_day}")
+print(f"Email account: {MY_EMAIL}")
+print(f"Password loaded: {MY_PASSWORD is not None}")
+
 for _, person in data.iterrows():
     name = person["name"]
     email = person["email"]
     month = int(person["month"])
     day = int(person["day"])
     
+    print(f"Checking {name}: birthday {month}/{day}")
+
     if current_day == day and current_month == month:
-        message_compose = messages(names)
+        print(f"Birthday match found: {name}")
+        message_compose = messages(name)
         send_email(message_compose, email)
         
